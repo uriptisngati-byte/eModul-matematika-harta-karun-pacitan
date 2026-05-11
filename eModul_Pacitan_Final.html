@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Modul Peta Harta Karun Pacitan</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a6b3a;
+    --primary-light: #2d9e5c;
+    --primary-pale: #e8f5ee;
+    --gold: #d4891a;
+    --gold-light: #f5c842;
+    --gold-pale: #fef9e7;
+    --ocean: #1565c0;
+    --ocean-light: #42a5f5;
+    --ocean-pale: #e3f2fd;
+    --earth: #795548;
+    --earth-light: #a1887f;
+    --earth-pale: #efebe9;
+    --cave: #4a148c;
+    --cave-light: #7b1fa2;
+    --cave-pale: #f3e5f5;
+    --culture: #bf360c;
+    --culture-light: #e64a19;
+    --culture-pale: #fbe9e7;
+    --bg: #f9f6f0;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --radius: 16px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a6b3a 0%, #0d4a28 60%, #1565c0 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-waves {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: var(--bg);
+    clip-path: ellipse(60% 100% at 50% 100%);
+  }
+
+  .header-content {
+    padding: 40px 32px 80px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .treasure-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 99px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffd54f;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .header-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(28px, 5vw, 48px);
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .header-title span { color: #ffd54f; }
+
+  .header-subtitle {
+    font-size: 15px;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 24px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    background: rgba(255,255,255,0.18);
+    border-radius: 99px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    background: var(--card);
+    border-bottom: 2px solid #e0e0e0;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .nav-tab:hover { color: var(--primary); }
+  .nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+  /* MAIN CONTENT */
+  .main { max-width: 860px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .section-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 { font-family: 'Fredoka One', cursive; font-size: 26px; }
+  .section-header p { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+
+  /* DESTINATION CARDS */
+  .dest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .dest-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+  }
+
+  .dest-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+  .dest-card.expanded { border-color: var(--primary); }
+
+  .dest-card-header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dest-emoji { font-size: 28px; }
+
+  .dest-card-title { font-weight: 800; font-size: 15px; }
+  .dest-card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .dest-card-body {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .dest-card.expanded .dest-card-body { display: block; }
+
+  .dest-card-body p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+
+  /* ACTIVITY BOXES */
+  .activity-box {
+    background: var(--primary-pale);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-top: 10px;
+  }
+
+  .activity-box h4 {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .activity-box ul { padding-left: 0; list-style: none; }
+  .activity-box ul li {
+    font-size: 12px;
+    padding: 3px 0;
+    color: #2d5a3d;
+    display: flex;
+    gap: 6px;
+  }
+
+  .activity-box ul li::before { content: "✦"; color: var(--gold); flex-shrink: 0; }
+
+  /* MATH CONCEPT CARDS */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .concept-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--primary);
+  }
+
+  .concept-card h3 { font-size: 14px; font-weight: 800; margin-bottom: 6px; }
+  .concept-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  /* QUIZ SECTION */
+  .quiz-container {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+  }
+
+  .quiz-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .quiz-progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .quiz-q-num { font-size: 13px; font-weight: 700; color: var(--text-muted); }
+
+  .quiz-question {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .quiz-option {
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    border: 2px solid #e0e0e0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    background: var(--card);
+    text-align: left;
+  }
+
+  .quiz-option:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-pale); }
+  .quiz-option.correct { border-color: #2e7d32; background: #e8f5e9; color: #2e7d32; }
+  .quiz-option.wrong { border-color: #c62828; background: #ffebee; color: #c62828; }
+
+  .quiz-feedback {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+  }
+
+  .quiz-feedback.correct { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+  .quiz-feedback.wrong { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+
+  .quiz-nav {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .btn {
+    padding: 11px 22px;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: #155e33; }
+  .btn-secondary { background: #e0e0e0; color: #333; }
+  .btn-secondary:hover { background: #ccc; }
+  .btn-gold { background: var(--gold); color: white; }
+  .btn-gold:hover { background: #b87717; }
+
+  /* SCORE CARD */
+  .score-card {
+    text-align: center;
+    padding: 32px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: none;
+  }
+
+  .score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 900;
+    margin: 0 auto 16px;
+  }
+
+  .score-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .score-card p { color: var(--text-muted); font-size: 15px; }
+
+  /* MISSION CARDS */
+  .mission-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-left: 6px solid var(--primary);
+  }
+
+  .mission-header {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .mission-number {
+    width: 36px; height: 36px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  .mission-title { font-weight: 800; font-size: 15px; flex: 1; }
+  .mission-arrow { color: var(--text-muted); font-size: 18px; transition: transform 0.2s; }
+  .mission-card.open .mission-arrow { transform: rotate(180deg); }
+
+  .mission-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .mission-card.open .mission-body { display: block; }
+
+  .mission-body p { font-size: 14px; line-height: 1.7; color: var(--text-muted); margin-top: 14px; }
+
+  .problem-box {
+    background: var(--gold-pale);
+    border: 1px solid #f5c842;
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: 14px;
+  }
+
+  .problem-box h4 { font-size: 13px; font-weight: 800; color: #7a5c00; margin-bottom: 6px; }
+  .problem-box p { font-size: 13px; color: #5a4200; margin: 0; line-height: 1.6; }
+
+  /* SOAL INTERAKTIF */
+  .mini-quiz {
+    background: var(--ocean-pale);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-top: 14px;
+  }
+
+  .mini-quiz h4 { font-size: 13px; font-weight: 800; color: var(--ocean); margin-bottom: 10px; }
+
+  .mini-quiz input[type=number] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #90caf9;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    background: white;
+    margin-bottom: 8px;
+  }
+
+  .mini-quiz-feedback {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: none;
+  }
+
+  /* PROGRESS TRACKER */
+  .progress-section {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+
+  .progress-section h3 { font-weight: 800; font-size: 17px; margin-bottom: 16px; }
+
+  .checkpoint-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .checkpoint-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .checkpoint-item:hover { border-color: var(--primary); background: var(--primary-pale); }
+  .checkpoint-item.done { background: var(--primary-pale); border-color: var(--primary); }
+
+  .checkpoint-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: white;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .checkpoint-item.done .checkpoint-check { background: var(--primary); border-color: var(--primary); }
+
+  .checkpoint-label { font-size: 14px; font-weight: 700; flex: 1; }
+  .checkpoint-badge {
+    font-size: 11px;
+    background: var(--gold-pale);
+    color: #7a5c00;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-weight: 700;
+  }
+
+  /* REFLEKSI */
+  .refleksi-form {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+  .form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: var(--radius-sm);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s;
+  }
+
+  .form-group textarea:focus { outline: none; border-color: var(--primary); }
+
+  .star-rating { display: flex; gap: 6px; }
+  .star { font-size: 28px; cursor: pointer; color: #e0e0e0; transition: color 0.1s; }
+  .star.on { color: var(--gold); }
+
+  /* PETA */
+  .peta-wrapper {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+
+  .peta-header {
+    padding: 16px 20px;
+    background: var(--primary);
+    color: white;
+    font-weight: 800;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* PETA SPOTS — NEW IMAGE CARD STYLE */
+  .peta-spots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .peta-spot {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 2px solid #e0e0e0;
+    cursor: default;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+
+  .peta-spot:hover { border-color: var(--primary); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .peta-spot.visited { border-color: var(--primary); }
+
+  .peta-spot-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+    background: #e8f5ee;
+  }
+
+  .peta-spot-img-placeholder {
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    background: linear-gradient(135deg, var(--primary-pale), var(--ocean-pale));
+  }
+
+  .peta-spot-info {
+    padding: 10px 12px;
+  }
+
+  .peta-spot-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .peta-spot-icon { font-size: 18px; }
+  .peta-spot-name { font-size: 13px; font-weight: 800; flex: 1; }
+
+  .peta-spot-visited-badge {
+    font-size: 10px;
+    background: var(--primary);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 700;
+    display: none;
+  }
+  .peta-spot.visited .peta-spot-visited-badge { display: inline-block; }
+
+  .peta-spot-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .peta-btn-check {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: var(--primary-pale);
+    color: var(--primary);
+    transition: all 0.2s;
+  }
+  .peta-btn-check:hover { background: var(--primary); color: white; }
+  .peta-spot.visited .peta-btn-check { background: var(--primary); color: white; }
+
+  .peta-btn-map {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--gold-pale);
+    color: #7a5000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border: none;
+  }
+  .peta-btn-map:hover { background: var(--gold); color: white; }
+
+  .peta-btn-source {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--ocean-pale);
+    color: var(--ocean);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border: none;
+  }
+  .peta-btn-source:hover { background: var(--ocean); color: white; }
+
+  .peta-stats {
+    padding: 12px 16px;
+    background: var(--primary-pale);
+    display: flex;
+    gap: 20px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .peta-stat { font-size: 13px; font-weight: 700; color: var(--primary); }
+
+  /* CAPAIAN */
+  .capaian-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    border-left: 5px solid var(--primary);
+  }
+
+  .capaian-icon { font-size: 30px; flex-shrink: 0; }
+  .capaian-title { font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+  .capaian-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* WELCOME SCREEN */
+  .welcome-banner {
+    background: linear-gradient(135deg, var(--gold-pale), var(--primary-pale));
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    border: 2px solid var(--gold-light);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .welcome-banner-emoji { font-size: 52px; flex-shrink: 0; }
+  .welcome-banner h2 { font-family: 'Fredoka One', cursive; font-size: 22px; color: var(--primary); margin-bottom: 6px; }
+  .welcome-banner p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .info-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+
+  .info-card-icon { font-size: 28px; margin-bottom: 8px; }
+  .info-card-num { font-size: 28px; font-weight: 900; color: var(--primary); }
+  .info-card-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+  .tujuan-list { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .tujuan-list h3 { font-weight: 800; font-size: 16px; margin-bottom: 14px; }
+  .tujuan-item {
+    display: flex; gap: 10px; padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px; line-height: 1.5;
+  }
+  .tujuan-item:last-child { border-bottom: none; }
+  .tujuan-num {
+    width: 22px; height: 22px; background: var(--primary); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* TIM PENGEMBANG */
+  .tim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .tim-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--primary);
+  }
+
+  .tim-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--ocean));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 10px;
+  }
+
+  .tim-name { font-size: 12px; font-weight: 800; color: var(--text); line-height: 1.4; }
+  .tim-role { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  @media (max-width: 600px) {
+    .header-content { padding: 28px 16px 70px; }
+    .welcome-banner { flex-direction: column; text-align: center; gap: 12px; }
+    .mission-header { padding: 14px; }
+    .peta-spots { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-content">
+    <div class="treasure-badge">🗺️ E-Modul Interaktif</div>
+    <h1 class="header-title">Peta Harta Karun <span>Pacitan</span></h1>
+    <p class="header-subtitle">Belajar Matematika lewat Petualangan Seru di Pacitan — Pantai, Goa, Sungai, Budaya & Sejarah</p>
+    <div class="header-meta">
+      <span class="meta-chip">📚 Kelas 4–6 SD</span>
+      <span class="meta-chip">🏫 STKIP PGRI Pacitan</span>
+    </div>
+  </div>
+  <div class="header-waves"></div>
+</div>
+
+<!-- NAV TABS -->
+<nav class="nav-tabs" role="tablist">
+  <button class="nav-tab active" onclick="showSection('beranda')" role="tab">🏠 Beranda</button>
+  <button class="nav-tab" onclick="showSection('peta')" role="tab">🗺️ Peta Eksplorasi</button>
+  <button class="nav-tab" onclick="showSection('destinasi')" role="tab">📍 Destinasi</button>
+  <button class="nav-tab" onclick="showSection('misi')" role="tab">🎯 Misi HOTS</button>
+  <button class="nav-tab" onclick="showSection('kuis')" role="tab">✏️ Kuis</button>
+  <button class="nav-tab" onclick="showSection('refleksi')" role="tab">💭 Refleksi</button>
+</nav>
+
+<main class="main">
+
+  <!-- ===== BERANDA ===== -->
+  <section class="section active" id="beranda">
+    <div class="welcome-banner">
+      <div class="welcome-banner-emoji">🏴‍☠️</div>
+      <div>
+        <h2>Selamat Datang, Penjelajah Hebat!</h2>
+        <p>Modul ini akan membawamu berpetualang di Pacitan sambil belajar matematika. Setiap tempat menyimpan "harta karun" berupa ilmu pengetahuan, kemandirian, kerja sama, dan cinta lingkungan!</p>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-icon">📍</div>
+        <div class="info-card-num">10</div>
+        <div class="info-card-label">Destinasi Wisata</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🎯</div>
+        <div class="info-card-num">10</div>
+        <div class="info-card-label">Misi HOTS</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">📐</div>
+        <div class="info-card-num">5</div>
+        <div class="info-card-label">Konsep Matematika</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">✏️</div>
+        <div class="info-card-num">10</div>
+        <div class="info-card-label">Soal Kuis</div>
+      </div>
+    </div>
+
+    <div class="tujuan-list">
+      <h3>🎯 Tujuan Pembelajaran</h3>
+      <div class="tujuan-item"><div class="tujuan-num">1</div><div>Meningkatkan rasa cinta tanah air melalui permainan peta harta karun berbasis konteks lokal Pacitan.</div></div>
+      <div class="tujuan-item"><div class="tujuan-num">2</div><div>Menanamkan pembelajaran kontekstual berbasis keunggulan lokal Pacitan.</div></div>
+      <div class="tujuan-item"><div class="tujuan-num">3</div><div>Mengembangkan keterampilan sosial, komunikasi, dan kerjasama tim melalui misi kelompok.</div></div>
+      <div class="tujuan-item"><div class="tujuan-num">4</div><div>Meningkatkan kemampuan berpikir kritis dan pemecahan masalah matematika tipe HOTS.</div></div>
+    </div>
+
+    <div style="margin-top: 24px; background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);">
+      <h3 style="font-weight: 800; font-size: 16px; margin-bottom: 12px;">📖 Capaian Pembelajaran (CP)</h3>
+      <div class="capaian-card">
+        <div class="capaian-icon">🔢</div>
+        <div>
+          <div class="capaian-title">Bilangan & Operasi</div>
+          <div class="capaian-desc">Berhitung, penjumlahan, pengurangan, perkalian, pembagian dalam konteks nyata Pacitan.</div>
+        </div>
+      </div>
+      <div class="capaian-card">
+        <div class="capaian-icon">📏</div>
+        <div>
+          <div class="capaian-title">Pengukuran</div>
+          <div class="capaian-desc">Mengukur panjang, lebar, tinggi, jarak, waktu, berat, dan luas dari objek nyata di Pacitan.</div>
+        </div>
+      </div>
+      <div class="capaian-card">
+        <div class="capaian-icon">🔷</div>
+        <div>
+          <div class="capaian-title">Geometri</div>
+          <div class="capaian-desc">Mengenal bangun datar dan ruang melalui objek alam — tebing, stalaktit, gong, cengkir, monumen.</div>
+        </div>
+      </div>
+      <div class="capaian-card">
+        <div class="capaian-icon">📊</div>
+        <div>
+          <div class="capaian-title">Pola & Perbandingan</div>
+          <div class="capaian-desc">Mengurutkan, membandingkan, dan menemukan pola bilangan dari konteks budaya Pacitan.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIM PENGEMBANG -->
+    <div style="margin-top: 24px; background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);">
+      <h3 style="font-weight: 800; font-size: 16px; margin-bottom: 4px;">👥 Tim Pengembang</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 0;">E-Modul ini dikembangkan oleh tim dosen dan mahasiswa STKIP PGRI Pacitan.</p>
+      <div class="tim-grid">
+        <div class="tim-card">
+          <div class="tim-avatar">👨‍🏫</div>
+          <div class="tim-name">Dr. Urip Tisngati, M.Pd.</div>
+          <div class="tim-role">Ketua Pengembang</div>
+        </div>
+        <div class="tim-card">
+          <div class="tim-avatar">👩‍🎓</div>
+          <div class="tim-name">Sigma Regita Pinkylicollins Setyawan</div>
+          <div class="tim-role">Pengembang Konten</div>
+        </div>
+        <div class="tim-card">
+          <div class="tim-avatar">👩‍🎓</div>
+          <div class="tim-name">Marsya Laudina Cendy</div>
+          <div class="tim-role">Pengembang Konten</div>
+        </div>
+        <div class="tim-card">
+          <div class="tim-avatar">👩‍🎓</div>
+          <div class="tim-name">Teta Ayu Saputri</div>
+          <div class="tim-role">Pengembang Konten</div>
+        </div>
+        <div class="tim-card">
+          <div class="tim-avatar">👩‍🎓</div>
+          <div class="tim-name">Eki Zuwarini</div>
+          <div class="tim-role">Pengembang Konten</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PETA EKSPLORASI ===== -->
+  <section class="section" id="peta">
+    <div class="section-header">
+      <div class="section-icon" style="background: var(--primary-pale); color: var(--primary);">🗺️</div>
+      <div>
+        <h2 style="color: var(--primary);">Peta Eksplorasi Pacitan</h2>
+        <p>Klik ✅ untuk menandai dikunjungi • Klik 🗺️ untuk buka Google Maps • Klik 🔗 untuk lihat sumber gambar</p>
+      </div>
+    </div>
+
+    <div class="peta-wrapper">
+      <div class="peta-header">🗺️ Harta Karun Pacitan — Peta Petualanganmu</div>
+      <div class="peta-spots" id="petaSpots">
+
+        <!-- 1. Pantai Klayar -->
+        <div class="peta-spot" id="spot-Pantai Klayar">
+          <img class="peta-spot-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Pantai_Klayar.jpg/800px-Pantai_Klayar.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Pantai Klayar">
+          <div class="peta-spot-img-placeholder" style="display:none;">🏖️</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🏖️</span>
+              <span class="peta-spot-name">Pantai Klayar</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Pantai Klayar')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.224997,110.947452" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://share.google/F8mbuk9xtrKk7VjF1" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Pantai Watukarung -->
+        <div class="peta-spot" id="spot-Pantai Watukarung">
+          <img class="peta-spot-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Watukarung_beach.jpg/800px-Watukarung_beach.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Pantai Watukarung">
+          <div class="peta-spot-img-placeholder" style="display:none;">🏄</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🏄</span>
+              <span class="peta-spot-name">Pantai Watukarung</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Pantai Watukarung')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.269389,110.948158" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://kilasjatim.com/2023/01/15/pantai-watu-karung-pacitan-spot-selancar-terbaik-dunia/" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Sungai Grindulu -->
+        <div class="peta-spot" id="spot-Sungai Grindulu">
+          <img class="peta-spot-img" src="https://awsimages.detik.net.id/community/media/visual/2018/04/18/2c10ef90-1cbb-4571-a4a8-5c6c97c37f9e_169.jpeg?w=700&q=90"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Sungai Grindulu">
+          <div class="peta-spot-img-placeholder" style="display:none;">🌊</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🌊</span>
+              <span class="peta-spot-name">Sungai Grindulu</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Sungai Grindulu')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.187404,111.101328" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://finance.detik.com/foto-bisnis/d-3952499/megahnya-jembatan-grindulu-senilai-rp-211-miliar-di-kampung-sby" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Sungai Maron -->
+        <div class="peta-spot" id="spot-Sungai Maron">
+          <img class="peta-spot-img" src="https://awsimages.detik.net.id/community/media/visual/2023/09/22/sungai-maron-pacitan_169.jpeg?w=700&q=90"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Sungai Maron">
+          <div class="peta-spot-img-placeholder" style="display:none;">🌿</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🌿</span>
+              <span class="peta-spot-name">Sungai Maron</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Sungai Maron')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.211784,111.122319" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://www.detik.com/jatim/wisata/d-7036650/indahnya-sungai-maron-pacitan-amazonnya-jawa-timu" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Goa Gong -->
+        <div class="peta-spot" id="spot-Goa Gong">
+          <img class="peta-spot-img" src="https://pacitanku.com/wp-content/uploads/2022/05/goa-gong-pacitan-1.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Goa Gong">
+          <div class="peta-spot-img-placeholder" style="display:none;">🦇</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🦇</span>
+              <span class="peta-spot-name">Goa Gong</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Goa Gong')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.164340,110.979466" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://pacitanku.com/2022/05/31/keren-kbri-tokyo-promosikan-keindahan-wisata-goa-gong-pacitan/" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Goa Tabuhan -->
+        <div class="peta-spot" id="spot-Goa Tabuhan">
+          <img class="peta-spot-img" src="https://pacitanku.com/wp-content/uploads/2022/08/goa-tabuhan-pacitan.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Goa Tabuhan">
+          <div class="peta-spot-img-placeholder" style="display:none;">🪨</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🪨</span>
+              <span class="peta-spot-name">Goa Tabuhan</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Goa Tabuhan')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.167185,111.020703" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://pacitanku.com/2022/08/13/tak-hanya-unik-goa-tabuhan-pacitan-juga-memiliki-sejarah-bernilai-patriotisme/" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Tradisi Ceprotan -->
+        <div class="peta-spot" id="spot-Tradisi Ceprotan">
+          <img class="peta-spot-img" src="https://pacitanku.com/wp-content/uploads/2021/08/budaya-pacitan-ceprotan.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Tradisi Ceprotan">
+          <div class="peta-spot-img-placeholder" style="display:none;">🥥</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🥥</span>
+              <span class="peta-spot-name">Tradisi Ceprotan</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Tradisi Ceprotan')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.226346,111.139034" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://pacitanku.com/2021/08/29/mengenal-6-budaya-pacitan-yang-sudah-ditetapkan-jadi-warisan-budaya-takbenda/" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Kesenian Rontek -->
+        <div class="peta-spot" id="spot-Kesenian Rontek">
+          <img class="peta-spot-img" src="https://perjalanan.id/wp-content/uploads/2025/01/Festival-Ronthek-Pacitan-2025.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Kesenian Rontek">
+          <div class="peta-spot-img-placeholder" style="display:none;">🥁</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🥁</span>
+              <span class="peta-spot-name">Kesenian Rontek</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Kesenian Rontek')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.186685,111.115454" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://perjalanan.id/aktivitas-hiburan/festival-ronthek-pacitan-2025-harmoni-musik-tradisional-dan-kreativitas-lokal/" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. Museum Song Terus -->
+        <div class="peta-spot" id="spot-Museum Song Terus">
+          <img class="peta-spot-img" src="https://iha.kemenbud.go.id/wp-content/uploads/2024/10/museum-song-terus.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Museum Song Terus">
+          <div class="peta-spot-img-placeholder" style="display:none;">🏛️</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">🏛️</span>
+              <span class="peta-spot-name">Museum Song Terus</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Museum Song Terus')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.147933,110.998604" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://iha.kemenbud.go.id/portfolio/museum-song-terus/" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. Monumen Jenderal Sudirman -->
+        <div class="peta-spot" id="spot-Museum Sudirman">
+          <img class="peta-spot-img" src="https://www.jogjasuper.co.id/wp-content/uploads/2023/05/monumen-jenderal-sudirman-pacitan.jpg"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Monumen Jenderal Sudirman">
+          <div class="peta-spot-img-placeholder" style="display:none;">⚔️</div>
+          <div class="peta-spot-info">
+            <div class="peta-spot-top">
+              <span class="peta-spot-icon">⚔️</span>
+              <span class="peta-spot-name">Museum Sudirman</span>
+              <span class="peta-spot-visited-badge">✓ Dikunjungi</span>
+            </div>
+            <div class="peta-spot-actions">
+              <button class="peta-btn-check" onclick="toggleSpot(this.closest('.peta-spot'),'Museum Sudirman')">✅ Tandai</button>
+              <a class="peta-btn-map" href="https://maps.google.com/?q=-8.010662,111.248632" target="_blank">🗺️ Maps</a>
+              <a class="peta-btn-source" href="https://www.jogjasuper.co.id/pacitan/wisata/monumen-jenderal-sudirman/" target="_blank">🔗 Info</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="peta-stats">
+        <span class="peta-stat" id="visitedCount">0 / 10 lokasi dikunjungi</span>
+        <span class="peta-stat" id="visitedPct">0% selesai</span>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <h3>✅ Checklist Belajarku</h3>
+      <div class="checkpoint-list" id="checkpointList">
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Membaca Kata Pengantar & Tentang Modul</div>
+          <div class="checkpoint-badge">Bab Awal</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Mengamati Pantai Klayar & Watukarung</div>
+          <div class="checkpoint-badge">Bab 1 — A</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Mengamati Sungai Grindulu & Maron</div>
+          <div class="checkpoint-badge">Bab 1 — B</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Menjelajahi Goa Gong & Goa Tabuhan</div>
+          <div class="checkpoint-badge">Bab 1 — C</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Mengenal Budaya Ceprotan & Rontek</div>
+          <div class="checkpoint-badge">Bab 1 — D</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Mengunjungi Museum Song Terus & Museum Sudirman</div>
+          <div class="checkpoint-badge">Bab 1 — E</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Memahami Konsep Matematika Bab 2</div>
+          <div class="checkpoint-badge">Bab 2</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Menyelesaikan Misi Pemecahan Masalah Bab 3</div>
+          <div class="checkpoint-badge">Bab 3</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Mengerjakan Kuis Formatif</div>
+          <div class="checkpoint-badge">Bab 4</div>
+        </div>
+        <div class="checkpoint-item" onclick="toggleCheck(this)">
+          <div class="checkpoint-check">✓</div>
+          <div class="checkpoint-label">Mengisi Refleksi & Penilaian</div>
+          <div class="checkpoint-badge">Bab 4</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DESTINASI ===== -->
+  <section class="section" id="destinasi">
+    <div class="section-header">
+      <div class="section-icon" style="background: var(--ocean-pale); color: var(--ocean);">📍</div>
+      <div>
+        <h2 style="color: var(--ocean);">Destinasi Harta Karun</h2>
+        <p>Klik kartu destinasi untuk melihat informasi & aktivitas matematika!</p>
+      </div>
+    </div>
+
+    <h3 style="font-weight: 800; margin-bottom: 12px; font-size: 16px;">🏖️ Pantai Pacitan</h3>
+    <div class="dest-grid">
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: #e3f2fd;">
+          <div class="dest-emoji">🏖️</div>
+          <div><div class="dest-card-title">Pantai Klayar</div><div class="dest-card-sub">±35 km dari pusat kota • Kec. Donorojo</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Terkenal dengan <strong>seruling laut</strong> — air laut menyembur dari celah karang — dan <strong>batu bernyanyi</strong>. Ada tebing karang tinggi, pasir putih, dan formasi batu unik.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>Hitung berapa kali air mancur menyembur dalam 1 menit</li>
+              <li>Bandingkan tinggi tebing vs air mancur</li>
+              <li>Ukur lebar pantai dengan langkah kaki</li>
+              <li>Mengenal bangun datar: tebing ≈ segitiga, batu ≈ lingkaran</li>
+              <li>Hitung ombak yang menghantam karang dalam 2 menit</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: #e3f2fd;">
+          <div class="dest-emoji">🏄</div>
+          <div><div class="dest-card-title">Pantai Watukarung</div><div class="dest-card-sub">±40 km dari pusat kota • Kec. Pringkuku</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Spot selancar terbaik di Indonesia! Ombaknya memiliki <strong>dua arah — kanan dan kiri</strong>. Ada pulau karang bernama Batu Nisan di tengah laut.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>Hitung peselancar yang sedang bermain di ombak</li>
+              <li>Bandingkan lebar pantai ini dengan pantai lain</li>
+              <li>Ukur tinggi ombak: sebatas lutut, pinggang, atau kepala?</li>
+              <li>Pulau karang berbentuk apa? Lingkaran, segitiga, atau tidak beraturan?</li>
+              <li>Jika berangkat dari kota pukul 07:00, sampai jam berapa? (1 jam perjalanan)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-weight: 800; margin-bottom: 12px; font-size: 16px;">🌊 Sungai Pacitan</h3>
+    <div class="dest-grid">
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: #e8f5e9;">
+          <div class="dest-emoji">🌊</div>
+          <div><div class="dest-card-title">Sungai Grindulu</div><div class="dest-card-sub">Panjang 70 km • 22 jembatan</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Sungai terpanjang di Pacitan! Berhulu di Gunung Gembes, bermuara di Pantai Pancer Door. Lebar rata-rata 20 m, membelah kota Pacitan.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>70 km = berapa meter? (70 × 1.000 = 70.000 m)</li>
+              <li>22 jembatan − 5 diperbaiki = berapa yang aktif?</li>
+              <li>Perahu 5 km/jam, 70 km → butuh berberapa jam? (70 ÷ 5 = 14 jam)</li>
+              <li>22 jembatan × 2 pagar = berapa total pagar?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: #e8f5e9;">
+          <div class="dest-emoji">🌿</div>
+          <div><div class="dest-card-title">Sungai Maron</div><div class="dest-card-sub">4,5 km • Kec. Punung</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Dijuluki "Amazon-nya Jawa Timur"! Air berwarna biru kehijauan sejernih kristal. Di kiri-kanan tumbuh pohon kelapa yang rindang dan asri.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>4,5 km = berapa meter? (4.500 meter)</li>
+              <li>Naik perahu 2 km/jam → berapa lama menyusuri 4,5 km?</li>
+              <li>Bandingkan lebar sungai di hulu dan hilir</li>
+              <li>Hitung pohon kelapa di tepi sungai</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-weight: 800; margin-bottom: 12px; font-size: 16px;">🦇 Goa-Goa Pacitan</h3>
+    <div class="dest-grid">
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: var(--cave-pale);">
+          <div class="dest-emoji">🦇</div>
+          <div><div class="dest-card-title">Goa Gong</div><div class="dest-card-sub">256 meter • 7 ruangan • 5 sendang</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Salah satu goa terindah se-Asia Tenggara! Stalaktitnya berbunyi seperti gong jika dipukul. Terdapat 7 ruangan besar dan 5 telaga kecil (sendang).</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>Goa 256 m ≈ 2,5 kali lapangan sepak bola</li>
+              <li>7 ruangan + 5 sendang = 12 total</li>
+              <li>Stalaktit mirip bangun ruang apa? (Kerucut)</li>
+              <li>Pola lampu: merah-kuning-hijau-biru-ungu → setelah ungu apa?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: var(--cave-pale);">
+          <div class="dest-emoji">🪨</div>
+          <div><div class="dest-card-title">Goa Tabuhan</div><div class="dest-card-sub">Geosite UNESCO • Kec. Punung</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Stalaktit & stalagmitnya mengeluarkan bunyi seperti gamelan saat dipukul! Dilindungi UNESCO, stalagmit tertinggi mencapai 7 meter.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>Stalagmit 7 m ÷ tinggi badanmu = berapa kali lipat?</li>
+              <li>Jarak 26 km, waktu 45 menit → kecepatan rata-rata?</li>
+              <li>Urutkan stalagmit dari pendek ke tinggi</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-weight: 800; margin-bottom: 12px; font-size: 16px;">🎭 Budaya & Sejarah</h3>
+    <div class="dest-grid">
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: var(--culture-pale);">
+          <div class="dest-emoji">🥥</div>
+          <div><div class="dest-card-title">Tradisi Ceprotan</div><div class="dest-card-sub">Desa Sekar • Setahun sekali</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Tradisi lempar-melempar cengkir (bakal kelapa muda) antar dua kelompok! Digelar setiap Senin Kliwon bulan Dzulqaidah untuk mengenang leluhur Desa Sekar.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>1 peserta lempar 3 cengkir × 20 peserta = berapa cengkir?</li>
+              <li>Jarak antara kelompok 10 m → berapa langkah kakimu?</li>
+              <li>Cengkir berbentuk bangun ruang apa? (Bola)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: var(--culture-pale);">
+          <div class="dest-emoji">🥁</div>
+          <div><div class="dest-card-title">Kesenian Rontek</div><div class="dest-card-sub">Desa Pelem • Kec. Pringkuku</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Kesenian dari kata "Ronda" + "Thek-thek". Menggunakan kentongan bambu (50 cm), gong, saron, kenong. Pernah tampil di Pekan Kebudayaan Nasional 2021!</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>5 kentongan + 2 gong + 3 saron + 1 kenong = berapa alat?</li>
+              <li>Kentongan 50 cm → bandingkan dengan meja belajarmu</li>
+              <li>Permukaan gong berbentuk apa? (Lingkaran)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: var(--earth-pale);">
+          <div class="dest-emoji">🏛️</div>
+          <div><div class="dest-card-title">Museum Song Terus</div><div class="dest-card-sub">4.627 koleksi • Diresmikan 2024</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Museum prasejarah yang menyimpan artefak dari kawasan Gunung Sewu. Diresmikan Mendikbud Nadiem Makarim pada Mei 2024. Koleksi artefak dari zaman paleolitikum hingga masa kini.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>4.627 dibulatkan ke ribuan terdekat? (5.000)</li>
+              <li>4.627 koleksi ÷ 500 per ruangan = berapa ruangan?</li>
+              <li>Artefak 10.000 tahun = berapa abad? (100 abad)</li>
+              <li>Ruangan 20 m × 10 m = berapa m² luasnya?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="toggleCard(this)">
+        <div class="dest-card-header" style="background: var(--earth-pale);">
+          <div class="dest-emoji">⚔️</div>
+          <div><div class="dest-card-title">Museum Jend. Sudirman</div><div class="dest-card-sub">99 hari gerilya • Monumen 8 m</div></div>
+        </div>
+        <div class="dest-card-body">
+          <p>Bekas markas gerilya Jenderal Sudirman selama 99 hari (1 April – 7 Juli 1949). Terdapat monumen 8 meter, 70 anak tangga, dan 38 relief perjuangan.</p>
+          <div class="activity-box">
+            <h4>📐 Aktivitas Matematika</h4>
+            <ul>
+              <li>45 + 8 + 17 = 70 anak tangga → makna 17, 8, 1945?</li>
+              <li>99 hari ÷ 30 hari ≈ berapa bulan? (3 bulan 9 hari)</li>
+              <li>Monumen 8 m ÷ tinggi badanmu = berapa kali lipat?</li>
+              <li>38 relief → jika 1 relief = 1 tahun kehidupan, berapa usianya?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MISI HOTS ===== -->
+  <section class="section" id="misi">
+    <div class="section-header">
+      <div class="section-icon" style="background: var(--gold-pale); color: var(--gold);">🎯</div>
+      <div>
+        <h2 style="color: var(--gold);">Misi HOTS — Pemecahan Masalah</h2>
+        <p>Kerjakan misi-misi matematika berikut bersama kelompokmu!</p>
+      </div>
+    </div>
+
+    <div id="misiList">
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #1565c0;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #1565c0;">1</div>
+          <div class="mission-title">🏖️ Misi Pantai — Selisih Panjang Sungai</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Kamu sedang mengamati peta Pacitan. Di peta tertulis Sungai Grindulu panjangnya 70 km dan Sungai Maron panjangnya 4,5 km.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Berapa selisih panjang Sungai Grindulu dan Sungai Maron? Ubah panjang keduanya ke satuan meter! Kemudian, berapa kali lipat lebih panjang Sungai Grindulu dibandingkan Sungai Maron?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Selisih (dalam km)</h4>
+            <input type="number" id="mq1" placeholder="Ketik jawaban (km)..." step="0.1">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq1', 65.5, 'mq1-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq1-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #7b1fa2;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #7b1fa2;">2</div>
+          <div class="mission-title">🦇 Misi Goa — Ruangan & Sendang</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Kamu menjelajahi Goa Gong yang memiliki 7 ruangan besar dan 5 sendang (telaga kecil).</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Jika setiap ruangan dimasuki oleh 8 siswa dan setiap sendang dikelilingi oleh 6 siswa, berapa total siswa yang ada di seluruh ruangan dan di sekitar seluruh sendang?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total Siswa</h4>
+            <input type="number" id="mq2" placeholder="Ketik jawaban...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq2', 86, 'mq2-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq2-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #bf360c;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #bf360c;">3</div>
+          <div class="mission-title">🥥 Misi Ceprotan — Lemparan Cengkir</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Dalam tradisi Ceprotan, seorang peserta bisa melempar 3 cengkir sekaligus. Ada 20 orang yang melempar.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Berapa total cengkir yang melayang di udara? Jika 1 keranjang berisi 50 cengkir, berapa keranjang yang diperlukan untuk semua cengkir tersebut?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total Cengkir</h4>
+            <input type="number" id="mq3" placeholder="Ketik jawaban...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq3', 60, 'mq3-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq3-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #795548;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #795548;">4</div>
+          <div class="mission-title">⚔️ Misi Museum — Anak Tangga Kemerdekaan</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Tangga monumen Jenderal Sudirman terbagi: bagian bawah 45 anak tangga, tengah 8, atas 17. Angka-angka ini melambangkan 17-8-1945.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Hitunglah total anak tangga! Jika kamu menaiki tangga dengan kecepatan 5 anak tangga per menit, berapa menit yang dibutuhkan untuk mencapai puncak?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total Anak Tangga</h4>
+            <input type="number" id="mq4" placeholder="Ketik jawaban...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq4', 70, 'mq4-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq4-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #1a6b3a;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #1a6b3a;">5</div>
+          <div class="mission-title">🏛️ Misi Museum Song Terus — Koleksi & Ruangan</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Museum Song Terus memiliki 4.627 koleksi. Setiap ruangan dapat memajang 500 koleksi.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Berapa ruangan minimal yang dibutuhkan untuk memajang semua koleksi? (Ingat: jika hasilnya tidak bulat, harus dibulatkan ke atas!) Jika tahun ini bertambah 1.200 koleksi, berapa total koleksi sekarang?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total Koleksi Sekarang</h4>
+            <input type="number" id="mq5" placeholder="Ketik jawaban...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq5', 5827, 'mq5-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq5-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #00838f;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #00838f;">6</div>
+          <div class="mission-title">🏄 Misi Watukarung — Kecepatan Ombak & Waktu</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Pantai Watukarung berjarak ±40 km dari pusat kota Pacitan. Seorang peselancar berangkat dari kota pukul 06.30 dengan kecepatan rata-rata kendaraan 40 km/jam.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Pukul berapa peselancar tiba di Pantai Watukarung? Jika ia berselancar selama 2 jam 30 menit dan kemudian perlu 1 jam untuk pulang, pukul berapa ia tiba di rumah?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Jam tiba di pantai (contoh: 730 untuk pukul 07.30)</h4>
+            <input type="number" id="mq6" placeholder="Ketik jawaban (misal 730)...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq6', 730, 'mq6-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq6-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #2e7d32;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #2e7d32;">7</div>
+          <div class="mission-title">🌿 Misi Sungai Maron — Perjalanan Perahu</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Sungai Maron panjangnya 4,5 km. Sebuah perahu wisata berangkat dari hulu ke hilir dengan kecepatan 3 km/jam, lalu kembali dengan kecepatan 1,5 km/jam karena melawan arus.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Berapa menit waktu yang dibutuhkan untuk perjalanan dari hulu ke hilir? Berapa menit untuk kembali dari hilir ke hulu? Berapa total waktu perjalanan pulang-pergi?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total waktu pulang-pergi (dalam menit)</h4>
+            <input type="number" id="mq7" placeholder="Ketik jawaban (menit)...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq7', 270, 'mq7-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq7-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #6a1b9a;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #6a1b9a;">8</div>
+          <div class="mission-title">🦇 Misi Goa Tabuhan — Pola Bunyi Gamelan</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Di Goa Tabuhan terdapat 5 stalagmit yang menghasilkan bunyi seperti nada gamelan. Tinggi stalagmit berturut-turut (dalam meter): 1, 3, 5, 7, 9 (membentuk pola barisan bilangan).</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Apa beda antara setiap suku dalam barisan itu? Berapa tinggi stalagmit ke-8 jika pola terus berlanjut? Berapa total tinggi semua 5 stalagmit yang ada sekarang?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total tinggi 5 stalagmit (dalam meter)</h4>
+            <input type="number" id="mq8" placeholder="Ketik jawaban (meter)...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq8', 25, 'mq8-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq8-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #e65100;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #e65100;">9</div>
+          <div class="mission-title">🥁 Misi Rontek — Pola Pukulan Kentongan</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Dalam pertunjukan Rontek, pola pukulan kentongan adalah: 2 kali – 4 kali – 6 kali – 8 kali – ... (barisan bilangan genap). Satu siklus penuh terdiri dari 6 pola pukulan.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Berapa jumlah total pukulan dalam 1 siklus penuh (6 pola)? Jika dalam 1 penampilan ada 4 siklus penuh, berapa total pukulan kentongan keseluruhan?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total pukulan dalam 4 siklus penuh</h4>
+            <input type="number" id="mq9" placeholder="Ketik jawaban...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq9', 168, 'mq9-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq9-fb"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-card" onclick="toggleMission(this)" style="border-left-color: #4e342e;">
+        <div class="mission-header">
+          <div class="mission-number" style="background: #4e342e;">10</div>
+          <div class="mission-title">🌊 Misi Grindulu — Jembatan & Luas Penampang</div>
+          <span class="mission-arrow">▼</span>
+        </div>
+        <div class="mission-body">
+          <p><strong>Konteks:</strong> Sungai Grindulu memiliki 22 jembatan. Lebar rata-rata sungai adalah 20 meter. Sebuah jembatan baru dirancang berbentuk persegi panjang dengan lebar 20 m dan panjang 8 m.</p>
+          <div class="problem-box">
+            <h4>💡 Soal HOTS</h4>
+            <p>Berapa luas permukaan jembatan baru tersebut? Jika biaya pemasangan lantai jembatan Rp150.000 per m², berapa total biaya yang dibutuhkan? Berapa total jembatan jika ditambah 3 jembatan baru lagi?</p>
+          </div>
+          <div class="mini-quiz">
+            <h4>✏️ Coba Jawab — Total biaya lantai jembatan (dalam Rupiah)</h4>
+            <input type="number" id="mq10" placeholder="Ketik jawaban (Rp)...">
+            <button class="btn btn-primary" onclick="checkMiniQuiz('mq10', 24000000, 'mq10-fb')">Cek Jawaban ✓</button>
+            <div class="mini-quiz-feedback" id="mq10-fb"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== KUIS ===== -->
+  <section class="section" id="kuis">
+    <div class="section-header">
+      <div class="section-icon" style="background: var(--gold-pale); color: var(--gold);">✏️</div>
+      <div>
+        <h2 style="color: var(--gold);">Tes Formatif</h2>
+        <p>10 soal pilihan ganda — Jawab dengan teliti!</p>
+      </div>
+    </div>
+
+    <div class="quiz-container" id="quizContainer">
+      <div class="quiz-progress">
+        <span class="quiz-q-num" id="quizNum">Soal 1 dari 10</span>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizBar" style="width: 10%"></div></div>
+        <span class="quiz-q-num" id="quizScore">Nilai: 0</span>
+      </div>
+      <div class="quiz-question" id="quizQ"></div>
+      <div class="quiz-options" id="quizOpts"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none;">Soal Berikutnya →</button>
+      </div>
+    </div>
+
+    <div class="score-card" id="scoreCard">
+      <div class="score-circle" id="scoreCircle"></div>
+      <h2 id="scoreTitle"></h2>
+      <p id="scoreDesc"></p>
+      <div style="margin-top: 20px;">
+        <button class="btn btn-primary" onclick="restartQuiz()">🔄 Ulangi Kuis</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REFLEKSI ===== -->
+  <section class="section" id="refleksi">
+    <div class="section-header">
+      <div class="section-icon" style="background: var(--culture-pale); color: var(--culture);">💭</div>
+      <div>
+        <h2 style="color: var(--culture);">Refleksi & Penilaian Diri</h2>
+        <p>Renungkan pengalamanmu belajar melalui modul ini!</p>
+      </div>
+    </div>
+
+    <div class="refleksi-form">
+      <h3 style="font-weight: 800; font-size: 17px; margin-bottom: 20px;">⭐ Penilaian Mandiri</h3>
+
+      <div class="form-group">
+        <label>Seberapa seru petualanganmu di E-Modul ini?</label>
+        <div class="star-rating" id="stars1" data-selected="0">
+          <span class="star" onclick="rateStar('stars1', 1)">★</span>
+          <span class="star" onclick="rateStar('stars1', 2)">★</span>
+          <span class="star" onclick="rateStar('stars1', 3)">★</span>
+          <span class="star" onclick="rateStar('stars1', 4)">★</span>
+          <span class="star" onclick="rateStar('stars1', 5)">★</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>1. Apa hal paling menarik yang kamu pelajari dari modul ini?</label>
+        <textarea placeholder="Tulis pengalamanmu di sini..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>2. Konsep matematika apa yang menurutmu paling menantang?</label>
+        <textarea placeholder="Misalnya: pengukuran, perbandingan, geometri..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>3. Destinasi Pacitan mana yang paling ingin kamu kunjungi? Mengapa?</label>
+        <textarea placeholder="Ceritakan alasanmu..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>4. Apa yang akan kamu lakukan berbeda saat belajar matematika selanjutnya?</label>
+        <textarea placeholder="Rencanamu ke depan..."></textarea>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <button class="btn btn-gold" onclick="simpanRefleksi()">💾 Simpan Refleksi</button>
+      </div>
+      <div id="refleksiMsg" style="margin-top: 12px; display: none; padding: 12px; background: var(--primary-pale); border-radius: 8px; color: var(--primary); font-weight: 700; font-size: 14px;">
+        ✅ Refleksimu telah disimpan! Kerja bagus, Penjelajah Hebat! 🏴‍☠️
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);">
+      <h3 style="font-weight: 800; font-size: 16px; margin-bottom: 14px;">📊 Kriteria Penilaian</h3>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <thead>
+            <tr style="background: var(--primary); color: white;">
+              <th style="padding: 10px; text-align: left; border-radius: 8px 0 0 0;">Kriteria</th>
+              <th style="padding: 10px; text-align: center;">Skor</th>
+              <th style="padding: 10px; text-align: left; border-radius: 0 8px 0 0;">Deskripsi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: #e8f5e9;"><td style="padding: 9px 10px; font-weight: 700;">Sangat Baik</td><td style="padding: 9px; text-align: center; font-weight: 800; color: var(--primary);">4</td><td style="padding: 9px 10px;">Jawaban lengkap, benar, dan disertai penjelasan tepat</td></tr>
+            <tr><td style="padding: 9px 10px; font-weight: 700;">Baik</td><td style="padding: 9px; text-align: center; font-weight: 800; color: #388e3c;">3</td><td style="padding: 9px 10px;">Benar tapi kurang lengkap atau kurang detail</td></tr>
+            <tr style="background: #fff8e1;"><td style="padding: 9px 10px; font-weight: 700;">Cukup</td><td style="padding: 9px; text-align: center; font-weight: 800; color: #f57c00;">2</td><td style="padding: 9px 10px;">Sebagian benar, ada kekeliruan konsep minor</td></tr>
+            <tr><td style="padding: 9px 10px; font-weight: 700;">Kurang</td><td style="padding: 9px; text-align: center; font-weight: 800; color: #d32f2f;">1</td><td style="padding: 9px 10px;">Sebagian besar salah atau tidak relevan</td></tr>
+            <tr style="background: #fce4ec;"><td style="padding: 9px 10px; font-weight: 700;">Tidak Menjawab</td><td style="padding: 9px; text-align: center; font-weight: 800; color: #c62828;">0</td><td style="padding: 9px 10px;">Tidak ada jawaban sama sekali</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top: 14px; background: var(--primary-pale); border-radius: 8px; padding: 12px 14px; font-size: 13px;">
+        <strong>📐 Rumus Nilai Uraian:</strong> (Total Skor ÷ Skor Maksimal) × 100<br>
+        <strong>✏️ Rumus Nilai PG:</strong> Jumlah Jawaban Benar × 10 (maks. 100)
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ===== TAB NAVIGATION =====
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const map = {beranda:0,peta:1,destinasi:2,misi:3,kuis:4,refleksi:5};
+  tabs[map[id]].classList.add('active');
+  if (id === 'kuis' && !quizStarted) initQuiz();
+}
+
+// ===== CARD TOGGLES =====
+function toggleCard(el) {
+  el.classList.toggle('expanded');
+}
+
+function toggleMission(el) {
+  el.classList.toggle('open');
+}
+
+// ===== PETA SPOTS =====
+let visitedSpots = new Set();
+function toggleSpot(el, name) {
+  el.classList.toggle('visited');
+  if (el.classList.contains('visited')) visitedSpots.add(name);
+  else visitedSpots.delete(name);
+  const n = visitedSpots.size;
+  document.getElementById('visitedCount').textContent = n + ' / 10 lokasi dikunjungi';
+  document.getElementById('visitedPct').textContent = (n*10) + '% selesai';
+}
+
+// ===== CHECKLIST =====
+function toggleCheck(el) {
+  el.classList.toggle('done');
+}
+
+// ===== MINI QUIZ =====
+function checkMiniQuiz(inputId, answer, fbId) {
+  const val = parseFloat(document.getElementById(inputId).value);
+  const fb = document.getElementById(fbId);
+  fb.style.display = 'block';
+  if (val === answer) {
+    fb.style.background = '#e8f5e9';
+    fb.style.color = '#2e7d32';
+    fb.style.border = '1px solid #a5d6a7';
+    fb.textContent = '✅ Benar! Jawabanmu tepat! Kerja bagus!';
+  } else {
+    fb.style.background = '#ffebee';
+    fb.style.color = '#c62828';
+    fb.style.border = '1px solid #ef9a9a';
+    fb.textContent = '❌ Belum tepat. Jawaban yang benar: ' + answer + '. Coba hitung lagi!';
+  }
+}
+
+// ===== QUIZ DATA =====
+const questions = [
+  {q: 'Pantai Klayar terletak di kecamatan...', opts: ['Pringkuku','Punung','Donorojo','Nawangan'], ans: 2},
+  {q: 'Fenomena alam "seruling laut" di Pantai Klayar terjadi karena...', opts: ['Air laut menyembur dari celah-celah karang','Angin laut bertiup kencang melewati lubang batu','Ombak memukul tebing dan menghasilkan bunyi','Pasir pantai bergerak dan mengeluarkan suara'], ans: 0},
+  {q: 'Pantai Watukarung terkenal sebagai spot selancar karena...', opts: ['Pantainya sangat luas dan berpasir putih','Ombaknya memiliki dua arah, ke kanan dan ke kiri','Lokasinya dekat pusat kota Pacitan','Terdapat pulau karang bernama Batu Nisan'], ans: 1},
+  {q: 'Sungai Grindulu bermuara di...', opts: ['Pantai Klayar','Pantai Watukarung','Muara Maron','Pantai Pancer Door'], ans: 3},
+  {q: 'Jika Sungai Grindulu panjangnya 70 km dan Sungai Maron 4,5 km, selisih panjang keduanya adalah...', opts: ['65,5 km','64,5 km','66 km','74,5 km'], ans: 0},
+  {q: 'Goa Gong dinamakan demikian karena...', opts: ['Bentuknya menyerupai gong','Di dalam goa terdapat alat musik gong','Stalaktitnya berbunyi seperti gong jika dipukul','Goa tersebut ditemukan oleh seorang musisi'], ans: 2},
+  {q: 'Goa Tabuhan ditetapkan sebagai geosite yang dilindungi oleh...', opts: ['Pemerintah Provinsi Jawa Timur','UNESCO','Kementerian Pariwisata Indonesia','Pemerintah Kabupaten Pacitan'], ans: 1},
+  {q: 'Tradisi Ceprotan diadakan pada hari...', opts: ['Jumat Kliwon bulan Ramadan','Selasa Wage bulan Muharram','Rabu Pon bulan Dzulhijjah','Senin Kliwon bulan Dzulqaidah'], ans: 3},
+  {q: 'Museum Song Terus diresmikan pada tahun...', opts: ['2024','2022','2021','2020'], ans: 0},
+  {q: 'Jumlah total anak tangga menuju Monumen Jenderal Sudirman adalah...', opts: ['45 anak tangga','17 anak tangga','70 anak tangga','99 anak tangga'], ans: 2},
+];
+
+let currentQ = 0, score = 0, answered = false, quizStarted = false;
+
+function initQuiz() {
+  quizStarted = true;
+  currentQ = 0; score = 0;
+  document.getElementById('quizContainer').style.display = 'block';
+  document.getElementById('scoreCard').style.display = 'none';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('quizNum').textContent = 'Soal ' + (currentQ+1) + ' dari ' + questions.length;
+  document.getElementById('quizScore').textContent = 'Nilai: ' + (score*10);
+  document.getElementById('quizBar').style.width = ((currentQ+1)/questions.length*100) + '%';
+  document.getElementById('quizQ').textContent = q.q;
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = labels[i] + '. ' + o;
+    btn.onclick = () => selectAnswer(i, btn);
+    opts.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  answered = false;
+}
+
+function selectAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentQ];
+  const allBtns = document.querySelectorAll('.quiz-option');
+  allBtns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('quizFeedback');
+  fb.style.display = 'block';
+  if (idx === q.ans) {
+    score++;
+    btn.classList.add('correct');
+    fb.className = 'quiz-feedback correct';
+    fb.textContent = '✅ Benar! Jawaban yang tepat!';
+  } else {
+    btn.classList.add('wrong');
+    allBtns[q.ans].classList.add('correct');
+    fb.className = 'quiz-feedback wrong';
+    fb.textContent = '❌ Kurang tepat. Jawaban yang benar: ' + ['A','B','C','D'][q.ans] + '. ' + q.opts[q.ans];
+  }
+  document.getElementById('quizScore').textContent = 'Nilai: ' + (score*10);
+  document.getElementById('nextBtn').style.display = currentQ < questions.length-1 ? 'inline-block' : 'none';
+  if (currentQ === questions.length-1) {
+    setTimeout(showScore, 1200);
+  }
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < questions.length) renderQuestion();
+  else showScore();
+}
+
+function showScore() {
+  document.getElementById('quizContainer').style.display = 'none';
+  const sc = document.getElementById('scoreCard');
+  sc.style.display = 'block';
+  const pct = score * 10;
+  document.getElementById('scoreCircle').textContent = pct;
+  let title, desc;
+  if (pct >= 90) { title = '🏆 Luar Biasa! Penjelajah Bintang!'; desc = 'Kamu menguasai semua materi harta karun Pacitan dengan sangat baik!'; }
+  else if (pct >= 70) { title = '🌟 Hebat! Penjelajah Tangguh!'; desc = 'Kamu sudah memahami sebagian besar materi. Terus berlatih!'; }
+  else if (pct >= 50) { title = '👍 Bagus! Penjelajah Semangat!'; desc = 'Kamu sudah berusaha dengan baik. Baca ulang materi dan coba lagi!'; }
+  else { title = '💪 Ayo Semangat!'; desc = 'Jangan menyerah! Baca ulang setiap destinasi dan coba kembali!'; }
+  document.getElementById('scoreTitle').textContent = title;
+  document.getElementById('scoreDesc').textContent = 'Benar ' + score + ' dari ' + questions.length + ' soal. ' + desc;
+}
+
+function restartQuiz() {
+  initQuiz();
+}
+
+// ===== STAR RATING =====
+function rateStar(groupId, val) {
+  const group = document.getElementById(groupId);
+  group.dataset.selected = val;
+  group.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('on', i < val);
+  });
+}
+
+// ===== REFLEKSI =====
+function simpanRefleksi() {
+  document.getElementById('refleksiMsg').style.display = 'block';
+  setTimeout(() => { document.getElementById('refleksiMsg').style.display = 'none'; }, 4000);
+}
+
+// INIT
+initQuiz();
+</script>
+</body>
+</html>
